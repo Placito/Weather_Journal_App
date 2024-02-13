@@ -19,9 +19,9 @@ generateButton.addEventListener('click', handleClick);
 const retrieveData = async () => {
     // Get the values of the zip code and country code inputs
     const zipCode = document.getElementById('zip').value;
-    const countryCode = document.getElementById('country').value;
+    const countryCode = document.getElementById('feelings').value;
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},${countryCode}&appid=${apiKey}&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&appid=${apiKey}&units=metric`;
 
     const request = await fetch(url);
     try {

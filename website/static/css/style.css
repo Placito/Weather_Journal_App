@@ -21,7 +21,7 @@ main{
 }
 .inputs{
     display: flex;
-    justify-content: space-around;
+    gap: 10px;
 }
 .entry{
     background: rgb(59, 74, 107);
@@ -49,6 +49,7 @@ button{
     padding: 10px 40px;
     border-radius: 6px;
     margin: auto;
+    cursor: pointer;
 }
 h1{
     font-size: 36px;
