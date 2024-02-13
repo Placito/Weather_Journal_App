@@ -1,12 +1,13 @@
 // Personal API Key for OpenWeatherMap API
 const apiKey = '1836112321afa35b658fee24a48c3cac';
 
+
 // Select the element with id 'generate'
 const generateButton = document.getElementById('generate');
 
 // Define the named callback function
 function handleClick(event) {
-    event.preventDefault()
+    event.preventDefault();
 
     console.log('Button clicked!');
 }
@@ -15,23 +16,31 @@ function handleClick(event) {
 generateButton.addEventListener('click', handleClick);
 
 // Function to GET Project Data
-const retrieveData = async () =>{
-    const request = await fetch('/all');
-    try {
-    // Transform into JSON
-    const allData = await request.json()
-    console.log(allData)
-    // Write updated data to DOM elements
-    document.getElementById('temp').innerHTML = Math.round(allData.temp)+ 'degrees';
-    document.getElementById('content').innerHTML = allData.feel;
-    document.getElementById("date").innerHTML =allData.date;
-    }
-    catch(error) {
-      console.log("error", error);
-      // appropriately handle the error
-    }
-   }
+const retrieveData = async () => {
+    // Get the values of the zip code and country code inputs
+    const zipCode = document.getElementById('zip').value;
+    const countryCode = document.getElementById('country').value;
 
-// Create a new date instance dynamically with JS
-let d = new Date();
-let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
+    const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},${countryCode}&appid=${apiKey}&units=metric`;
+
+    const request = await fetch(url);
+    try {
+        // Transform response to JSON
+        const responseData = await request.json();
+
+        // Extract relevant data
+        const temperature = responseData.main.temp;
+        const description = responseData.weather[0].description;
+
+        // Update DOM elements
+        document.getElementById('temp').innerHTML = `${temperature}°C`;
+        document.getElementById('content').innerHTML = description;
+        document.getElementById('date').innerHTML = new Date().toLocaleDateString();
+    } catch (error) {
+        console.log("error", error);
+        // Handle error
+    }
+};
+
+// Call retrieveData function when the page loads
+window.addEventListener('load', retrieveData);
