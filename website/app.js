@@ -1,45 +1,104 @@
-// Personal API Key for OpenWeatherMap API
-const apiKey = '1836112321afa35b658fee24a48c3cac';
+/* Global Variables */
+const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
+const apiKey = 'ae684c8809f260571a8216177ef33e56'; // Personal API Key for OpenWeatherMap API
+
+// Create a new date instance dynamically with JS
+let d = new Date();
+let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
+
+const userInfo = document.getElementById('userInfo');
+
+// Event listener to add function to existing HTML DOM element
+const generateBtn = document.getElementById('generate');
+generateBtn.addEventListener('click', performAction);
+
+/* Function called by event listener */
+function performAction(e) {
+    e.preventDefault();
+
+    //get user input
+    const zipCode = document.getElementById('zip').value;
+    const content = document.getElementById('feelings').value;
+
+    if (zipCode !== '') {
+        generateBtn.classList.remove('invalid');
+        getWeatherData(baseUrl, zipCode, apiKey)
+            .then(function(data) {
+                // add data to POST request
+                postData('/add', { temp: convertKelvinToCelsius(data.main.temp), date: newDate, content: content });
+            }).then(function() {
+                // call updateUI to update browser content
+                updateUI()
+            }).catch(function(error) {
+                console.log(error);
+                alert('The zip code is invalid. Try again');
+
+            });
+        userInfo.reset();
+    } else {
+        generateBtn.classList.add('invalid');
+    }
 
 
-// Select the element with id 'generate'
-const generateButton = document.getElementById('generate');
-
-// Define the named callback function
-function handleClick(event) {
-    event.preventDefault();
-
-    console.log('Button clicked!');
 }
 
-// Add an event listener to the 'generate' button
-generateButton.addEventListener('click', handleClick);
-
-// Function to GET Project Data
-const retrieveData = async () => {
-    // Get the values of the zip code input
-    const zipCode = document.getElementById('zip').value;
-
-    const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&appid=${apiKey}&units=metric`;
-
-    const request = await fetch(url);
+/* Function to GET Web API Data*/
+const getWeatherData = async(baseUrl, zipCode, apiKey) => {
+    // res equals to the result of fetch function
+    const res = await fetch(`${baseUrl}?q=${zipCode}&appid=${apiKey}`);
     try {
-        // Transform response to JSON
-        const responseData = await request.json();
-
-        // Extract relevant data
-        const temperature = responseData.main.temp;
-        const description = responseData.weather[0].description;
-
-        // Update DOM elements
-        document.getElementById('temp').innerHTML = `${temperature}°C`;
-        document.getElementById('content').innerHTML = description;
-        document.getElementById('date').innerHTML = new Date().toLocaleDateString();
+        // data equals to the result of fetch function
+        const data = await res.json();
+        return data;
     } catch (error) {
-        console.log("error", error);
-        // Handle error
+        console.log('error', error);
     }
 };
 
-// Call retrieveData function when the page loads
-window.addEventListener('load', retrieveData);
+/* Function to POST data */
+const postData = async(url = '', data = {}) => {
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            temp: data.temp,
+            date: data.date,
+            content: data.content
+        })
+    });
+
+    try {
+        const newData = await response.json();
+        return newData;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const updateUI = async() => {
+    const request = await fetch('/all');
+    try {
+        const allData = await request.json();
+        console.log(allData);
+        // update new entry values
+        if (allData.date !== undefined && allData.temp !== undefined && allData.content !== undefined) {
+            document.getElementById('date').innerHTML = allData.date;
+            document.getElementById('temp').innerHTML = allData.temp + ' degree C';
+            document.getElementById('content').innerHTML = allData.content;
+        }
+    } catch (error) {
+        console.log('error', error);
+    }
+};
+
+// helper function to convert temperature from Kelvin to Celsius
+function convertKelvinToCelsius(kelvin) {
+    if (kelvin < (0)) {
+        return 'below absolute zero (0 K)';
+    } else {
+        return (kelvin - 273.15).toFixed(2);
+    }
+}
