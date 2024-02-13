@@ -17,9 +17,8 @@ generateButton.addEventListener('click', handleClick);
 
 // Function to GET Project Data
 const retrieveData = async () => {
-    // Get the values of the zip code and country code inputs
+    // Get the values of the zip code input
     const zipCode = document.getElementById('zip').value;
-    const countryCode = document.getElementById('feelings').value;
 
     const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&appid=${apiKey}&units=metric`;
 

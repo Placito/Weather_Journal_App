@@ -24,4 +24,4 @@ The Weather Journal App allows users to enter a zip code and their feelings abou
 
 ## Gettinbg Started
 
-Using `npm run start`
+Using `node server.js`
