@@ -21,3 +21,7 @@ The Weather Journal App allows users to enter a zip code and their feelings abou
 - Node.js
 - Express.js
 - OpenWeatherMap API
+
+## Gettinbg Started
+
+Using `node server.js`

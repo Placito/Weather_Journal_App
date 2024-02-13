@@ -1,5 +1,5 @@
 // Personal API Key for OpenWeatherMap API
-const apiKey = '<your_api_key>&units=imperial';
+const apiKey = '1836112321afa35b658fee24a48c3cac';
 
 // Select the element with id 'generate'
 const generateButton = document.getElementById('generate');
